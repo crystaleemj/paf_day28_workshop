@@ -59,4 +59,41 @@ public class GameSvc {
 
         return object.build();
     }
+
+    // below methods are for doing part A with aggregation
+
+    public Document listReviewByIDAggregation(Integer id){
+        return repo.listReviewByIDAggregation(id);
+
+    }
+
+    public JsonObject createJsonForAggregatedResult(Integer id){
+        Document doc = listReviewByIDAggregation(id);
+        JsonArrayBuilder array = Json.createArrayBuilder();
+        List<Document> reviewList = listReviewsByID(id);
+        List<String> list = new ArrayList<>();
+
+        for (Document document : reviewList) {
+            list.add(document.getObjectId("_id").toString());
+        }
+
+         for (String s : list) {
+            array.add("/reviews/"+s);
+
+        }
+
+        JsonObjectBuilder object = Json.createObjectBuilder()
+        .add("game_id", doc.getInteger("gid"))
+        .add("name", doc.getString("name"))
+        .add("year", doc.getInteger("year"))
+        .add("rank", doc.getInteger("ranking"))
+        .add("average", "")
+        .add("users_rated", doc.getInteger("users_rated"))
+        .add("url", doc.getString("url"))
+        .add("thumbnail", doc.getString("image"))
+        .add("reviews", array)
+        .add("timestamp", new Date().toString());
+
+        return object.build();
+    }
 }
