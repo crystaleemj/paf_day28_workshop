@@ -5,13 +5,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import sg.edu.nus.iss.paf_day28_workshop.service.GameSvc;
 
-import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+
+
 
 
 
@@ -33,6 +34,14 @@ public class GameRestController {
     @GetMapping(path = "/game/{game_id}/reviews", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> listAggregatedReviewResult(@PathVariable Integer game_id) {
         return new ResponseEntity<String>(svc.createJsonForAggregatedResult(game_id).toString(), HttpStatus.OK);
+    }
+
+    // list game by id and display review with highest rating 
+    // where path variable {rating} = highest/lowest
+    @GetMapping(path = "/games/{rating}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> listGameReviewRating(@PathVariable String rating) {
+
+        return new ResponseEntity<String>(svc.returnRatedGamesJson(rating).toString(), HttpStatus.OK);
     }
     
     

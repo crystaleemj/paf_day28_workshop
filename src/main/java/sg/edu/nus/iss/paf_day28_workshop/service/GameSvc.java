@@ -96,4 +96,31 @@ public class GameSvc {
 
         return object.build();
     }
+
+    public List<Document> listGameByReviewRatings(String rating){
+        return repo.listGameByReviewRatings(rating);
+    }
+
+    public JsonObject returnRatedGamesJson(String rating){
+        JsonArrayBuilder array = Json.createArrayBuilder();
+        List<Document> games = listGameByReviewRatings(rating);
+
+        for (Document document : games) {
+            JsonObjectBuilder object = Json.createObjectBuilder()
+            .add("_id", document.getInteger("_id"))
+            .add("name", document.getString("name"))
+            .add("rating", document.getInteger("rating"))
+            .add("user", document.getString("user"))
+            .add("comment", document.getString("comment"))
+            .add("review_id", document.getString("review_id"));
+            array.add(object);
+        }
+
+        JsonObjectBuilder object = Json.createObjectBuilder()
+            .add("rating", rating)
+            .add("games", array)
+            .add("timestamp", new Date().toString());
+        
+            return object.build();
+    }
 }
